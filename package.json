@@ -1,0 +1,12 @@
+{
+  "name": "cards",
+  "version": "0.1.0",
+  "description": "A trello terminal client",
+  "main": "index.js",
+  "repository": "https://www.github.com/justanotherdot/cards",
+  "author": "Ryan James Spencer",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "trello": "^0.8.0"
+  }
+}
