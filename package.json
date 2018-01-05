@@ -7,6 +7,8 @@
   "author": "Ryan James Spencer",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "trello": "^0.8.0"
+    "got": "^8.0.1",
+    "trello": "^0.8.0",
+    "yargs": "^10.0.3"
   }
 }
