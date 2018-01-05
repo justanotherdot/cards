@@ -16,21 +16,24 @@ const reqBoards = config => {
       if (!obj.closed) {
         console.log(obj.name, obj.id)
       }
-    });
-  });
+    })
+  })
 }
 
 const reqCardsOnBoard = (config, boardName) => {
   const trello = new Trello(config.auth_key, config.auth_token)
-  trello.getListsOnBoard(boardName, (err, lists) => {
-    lists.forEach(l => {
-      if (!l.closed) {
-        trello.getCardsOnList(l.id, (err, cards) => {
-          console.log(l.name)
-          cards.forEach(c => console.log(c.name))
-          console.log('')
-        })
-      }
+  trello.getBoards(config.username, (err, boards) => {
+    const board = boards.find(b => boardName.toLowerCase().includes(b.name.toLowerCase()))
+    trello.getListsOnBoard(board.id, (err, lists) => {
+      lists.forEach(l => {
+        if (!l.closed) {
+          trello.getCardsOnList(l.id, (err, cards) => {
+            console.log(l.name)
+            cards.forEach(c => console.log(c.name))
+            console.log('')
+          })
+        }
+      })
     })
   })
 }
@@ -40,16 +43,16 @@ const reqCardsOnBoard = (config, boardName) => {
 const getConfig = argv => {
   if (fs.existsSync(CONFIG_FILE)) {
     const config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'))
-    return config;
+    return config
   } else {
     console.log(`${CONFIG_FILE} does not exist, yet.`)
     console.log('Please run `' + argv['$0'] + 'auth`, first.')
-    return {};
+    return {}
   }
 }
 
 const handleShow = argv => {
-  const config = getConfig(argv);
+  const config = getConfig(argv)
   reqCardsOnBoard(config, argv.board)
 }
 
@@ -57,11 +60,15 @@ const handleAuth = argv => {
   console.log(`Writing authorisation token to ${CONFIG_FILE} ... `)
   fs.writeFile(
     CONFIG_FILE,
-    JSON.stringify({
-      auth_key: argv.key,
-      auth_token: argv.token,
-      username: argv.username
-    }, null, 4),
+    JSON.stringify(
+      {
+        auth_key: argv.key,
+        auth_token: argv.token,
+        username: argv.username
+      },
+      null,
+      4
+    ),
     err => {
       if (err) {
         console.error(err)
@@ -94,16 +101,19 @@ const argv = yargs
     'auth [key] [token] [username]',
     'Provide credentials to authorise trello requests',
     yargs => {
-      yargs.positional('key', {
-        describe: 'Trello API Developer key for authorising requests',
-        default: ''
-      }).positional('token', {
-        describe: 'Trello API Developer token for authorising requests',
-        default: ''
-      }).positional('username', {
-        describe: 'Trello username',
-        default: ''
-      })
+      yargs
+        .positional('key', {
+          describe: 'Trello API Developer key for authorising requests',
+          default: ''
+        })
+        .positional('token', {
+          describe: 'Trello API Developer token for authorising requests',
+          default: ''
+        })
+        .positional('username', {
+          describe: 'Trello username',
+          default: ''
+        })
     },
     handleAuth
   )
