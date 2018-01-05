@@ -28,9 +28,10 @@ const reqCardsOnBoard = (config, boardName) => {
       lists.forEach(l => {
         if (!l.closed) {
           trello.getCardsOnList(l.id, (err, cards) => {
-            console.log(l.name)
+            console.log(`${l.name}`)
+            console.log('-'.repeat(l.name.length))
             cards.forEach(c => console.log(c.name))
-            console.log('')
+            console.log('\n')
           })
         }
       })
