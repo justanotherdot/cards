@@ -14,10 +14,25 @@ const reqBoards = config => {
   trello.getBoards(config.username, (err, res) => {
     res.forEach(obj => {
       if (!obj.closed) {
-        console.log(obj.name)
+        console.log(obj.name, obj.id)
       }
     });
   });
+}
+
+const reqCardsOnBoard = (config, boardName) => {
+  const trello = new Trello(config.auth_key, config.auth_token)
+  trello.getListsOnBoard(boardName, (err, lists) => {
+    lists.forEach(l => {
+      if (!l.closed) {
+        trello.getCardsOnList(l.id, (err, cards) => {
+          console.log(l.name)
+          cards.forEach(c => console.log(c.name))
+          console.log('')
+        })
+      }
+    })
+  })
 }
 
 // HANDLERS
@@ -35,7 +50,7 @@ const getConfig = argv => {
 
 const handleShow = argv => {
   const config = getConfig(argv);
-  console.log('showing')
+  reqCardsOnBoard(config, argv.board)
 }
 
 const handleAuth = argv => {
